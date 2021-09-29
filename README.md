@@ -25,7 +25,7 @@ Espero que gostem...<br>
 
 <a name="res"></a>
 # Objetivo 📝
-O objetivo desse projeto é avaliar os dados disponibilizados pelo time de *Data Intelligence* do *Hospital Sírio-Libanês*, contendo informações dos pascientes acometidos por COVID-19, na tentativa de criar um modelo que consiga prever se o quadro clínico do paciente irá evoluir a ponto de ser necessária a transferência para a Unidade de Tratamento Intensívo (UTI).
+Avaliar os dados disponibilizados pelo time de Data Intelligence do Hospital Sírio-Libanês, que contém informações de um conjunto de pacientes atendidos pelo hospital e que estavam acometidos pela COVID-19, para assim criar um modelo de predição que seja capaz de classificar esses pacientes entre aqueles cujo quadro clínico evoluiria a ponto de ser necessária a transferência para a unidade de tratamento intensivo (UTI) e os que ficarão estáveis enquanto internados. 
 
 <a name="sit"></a>
 # Situação 🌎
