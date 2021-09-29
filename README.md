@@ -20,7 +20,6 @@ Predição da necessidade de internação na UTI de paciêntes com COVID-19 usan
 
 <a name="apre"></a>
 # Apresentação ✌️
-------------
 Oiee! Eu me chamo Filipi Rigui, sou Engenheiro de Controle e Automação e nas horas que consigo, estudo *Data Science*.<br> Esse projeto é a entrega final do **Bootcamp de Data Science Aplicada da [Alura](https://www.alura.com.br/)**.<br>
 Espero que gostem...<br>
 
@@ -31,31 +30,24 @@ O objetivo desse projeto é avaliar os dados disponibilizados pelo time de *Data
 
 <a name="sit"></a>
 # Situação 🌎
-------------
 
 <a name="plan"></a>
 # Plano 🤓
-------------
 
 <a name="exec"></a>
 # Execução 👊
-------------
 
 <a name="result"></a>
 # Resultados 🎯
-------------
 
 <a name="result"></a>
 # Conclusões 🚩
-------------
 
 <a name="agrad"></a>
 # Agradecimentos ♥️
-------------
 
 <a name="contato"></a>
 # Contato 🍕
-------------
 
 <a name="porg"></a>
 # Project Organization
