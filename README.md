@@ -33,6 +33,11 @@ Avaliar os dados disponibilizados pelo time de Data Intelligence do Hospital Sí
 <a name="plan"></a>
 # Plano 🤓
 
+<!--ts-->
+   * [Ingestão dos dados](https://github.com/fdrigui/covid19_icu_admission_prediction/blob/main/notebooks/1.0_ingest_raw_data.ipynb)
+
+<!--te-->
+
 <a name="exec"></a>
 # Execução 👊
 
