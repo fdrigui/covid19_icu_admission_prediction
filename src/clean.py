@@ -182,9 +182,12 @@ def plot_features_with_same_value_for_all_observations(df:pd.DataFrame)-> pd.Dat
     >>>
     '''
     unique = df.nunique() == 1
-
-    return unique         
-
+    
+    print('Nome das Colunas:\n--------------------')
+    for i in range(len(unique)):
+        if unique[i]:
+            print(f'{unique.index[i]}')
+    print(f'--------------------\nTotal: {unique[unique == True].size}')
 
 
 def drop_duplicated_features(df:pd.DataFrame, print_dropped_columns:bool= False)-> pd.DataFrame:
@@ -232,9 +235,45 @@ def plot_duplicated_features(df:pd.DataFrame)-> pd.DataFrame:
 
     '''
     
-    duplicated_columns = df.T.duplicated()
+    duplicated_df = df.T.duplicated()
+    duplicated_columns = df.loc[:,duplicated_df].columns
     
-    return df.loc[:,duplicated_columns]
+    print('Nome das Colunas:\n--------------------')
+    for col in duplicated_columns:
+        print(f'{col}')
+    print(f'--------------------\nTotal: {duplicated_columns.size}')
+    
+
+def rename_portion_of_columns(df:pd.DataFrame, start:int, end: int, to_replace: str, value: str) -> pd.DataFrame:
+    '''
+    
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DESCRIPTION.
+    start : int
+        DESCRIPTION.
+    end : int
+        DESCRIPTION.
+    to_replace : str
+        DESCRIPTION.
+    value : str
+        DESCRIPTION.
+
+    Returns
+    -------
+    df : TYPE
+        DESCRIPTION.
+
+    '''
+    
+    columns = df.columns.to_series()
+    columns[start:end] = columns[start:end].str.replace(to_replace, value)
+    df.columns = columns
+    
+    return df
+    
 
 
 def prepare_window(rows):
@@ -257,5 +296,30 @@ def prepare_window(rows):
     return rows.loc[rows["WINDOW"] == "0-2"]
 
 
+if __name__ == '__main__':
     
+    import pandas as pd
     
+    df = pd.read_excel('https://github.com/fdrigui/covid19_icu_admission_prediction/raw/main/data/raw/Kaggle_Sirio_Libanes_ICU_Prediction.xlsx')
+    
+    df_1_without_nan = neighborhood_missing_data(df, 'PATIENT_VISIT_IDENTIFIER')
+    
+    # print_nan_count_by_feature(df_1_without_nan)
+    
+    df_2_without_nan = df_1_without_nan.drop(df_1_without_nan.query('UREA_MEDIAN.isnull()', engine='python').index)
+    
+    # plot_features_with_same_value_for_all_observations(df_2_without_nan)
+    
+    df_3_without_same_value_col = drop_features_with_same_value_for_all_observations(df_2_without_nan, False)
+    
+    # plot_features_with_same_value_for_all_observations(df_3_without_same_value_col)
+    
+    # plot_duplicated_features(df_3_without_same_value_col)  
+    
+    df_4_without_duplicated_features = drop_duplicated_features(df_3_without_same_value_col, False)
+    
+    # plot_duplicated_features(df_4_without_duplicated_features)
+    
+    df_5_renamed = rename_portion_of_columns(df_4_without_duplicated_features, 13, (13+36), '_MEDIAN', '')
+    
+    # df_5_renamed.columns[13:13+36]
