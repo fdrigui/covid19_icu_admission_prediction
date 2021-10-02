@@ -273,6 +273,39 @@ def rename_portion_of_columns(df:pd.DataFrame, start:int, end: int, to_replace: 
     df.columns = columns
     
     return df
+
+def drop_patient_moved_to_icu_on_first_window(df:pd.DataFrame)->pd.DataFrame:
+    '''
+    
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DESCRIPTION.
+
+    Returns
+    -------
+    TYPE
+        DESCRIPTION.
+
+    '''
+    
+    direct_to_icu = df.query("WINDOW == '0-2' & ICU == 1")['PATIENT_VISIT_IDENTIFIER'].to_list()
+    index_to_drop = df.query('PATIENT_VISIT_IDENTIFIER == @direct_to_icu').index
+    
+    print(f'Total dropped visit id: {len(direct_to_icu)}')
+    
+    return df.drop(index_to_drop)
+
+def plot_patient_moved_to_icu_on_first_window(df:pd.DataFrame)->pd.DataFrame:
+    
+    direct_to_icu = df.query("WINDOW == '0-2' & ICU == 1")['PATIENT_VISIT_IDENTIFIER'].to_list()
+    
+    
+    print('PATIENT_VISIT_IDENTIFIER:\n--------------------')
+    for visit_id in direct_to_icu:
+        print(f'{visit_id}')
+    print(f'--------------------\nTotal: {len(direct_to_icu)}')
     
 
 
@@ -291,9 +324,9 @@ def prepare_window(rows):
         DESCRIPTION.
 
     '''
-    if(np.any(rows["ICU"])):
-        rows.loc[rows["WINDOW"]=="0-2", "ICU"] = 1
-    return rows.loc[rows["WINDOW"] == "0-2"]
+    if(np.any(rows["ICU"])): # If any of 5 rows of that grouped visitor has 1 on ICU
+        rows.loc[rows["WINDOW"]=="0-2", "ICU"] = 1 # It is selected Window ==0-2 and ICU and set the value of ICU to 1
+    return rows.loc[rows["WINDOW"] == "0-2"] # Return only window 0-2
 
 
 if __name__ == '__main__':
@@ -323,3 +356,11 @@ if __name__ == '__main__':
     df_5_renamed = rename_portion_of_columns(df_4_without_duplicated_features, 13, (13+36), '_MEDIAN', '')
     
     # df_5_renamed.columns[13:13+36]
+    
+    # plot_patient_moved_to_icu_on_first_window(df_5_renamed)
+    
+    df_6_icu_on_first_window = drop_patient_moved_to_icu_on_first_window(df_5_renamed)
+    
+    # plot_patient_moved_to_icu_on_first_window(df_6_icu_on_first_window)
+    
+    
