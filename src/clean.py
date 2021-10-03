@@ -329,38 +329,75 @@ def prepare_window(rows):
     return rows.loc[rows["WINDOW"] == "0-2"] # Return only window 0-2
 
 
+def clean(pd:pd.DataFrame)->pd.DataFrame:
+    '''
+    
+
+    Parameters
+    ----------
+    pd : pd.DataFrame
+        DESCRIPTION.
+
+    Returns
+    -------
+    df_6_icu_on_first_window : TYPE
+        DESCRIPTION.
+
+    '''
+    
+    df_1_without_nan = neighborhood_missing_data(df, 'PATIENT_VISIT_IDENTIFIER')
+    
+    df_2_without_nan = df_1_without_nan.drop(df_1_without_nan.query('UREA_MEDIAN.isnull()', engine='python').index)
+    
+    df_3_without_same_value_col = drop_features_with_same_value_for_all_observations(df_2_without_nan, False)
+    
+    df_4_without_duplicated_features = drop_duplicated_features(df_3_without_same_value_col, False)
+    
+    df_5_renamed = rename_portion_of_columns(df_4_without_duplicated_features, 13, (13+36), '_MEDIAN', '')
+    
+    df_6_icu_on_first_window = drop_patient_moved_to_icu_on_first_window(df_5_renamed)
+    
+    df_7_cleaned = df_6_icu_on_first_window.groupby("PATIENT_VISIT_IDENTIFIER", as_index=False).apply(prepare_window)\
+                                       .reset_index().drop(['level_0', 'level_1'], axis=1)
+    
+    return df_7_cleaned
+    
+
+
 if __name__ == '__main__':
     
     import pandas as pd
     
     df = pd.read_excel('https://github.com/fdrigui/covid19_icu_admission_prediction/raw/main/data/raw/Kaggle_Sirio_Libanes_ICU_Prediction.xlsx')
     
-    df_1_without_nan = neighborhood_missing_data(df, 'PATIENT_VISIT_IDENTIFIER')
+    # df_1_without_nan = neighborhood_missing_data(df, 'PATIENT_VISIT_IDENTIFIER')
     
     # print_nan_count_by_feature(df_1_without_nan)
     
-    df_2_without_nan = df_1_without_nan.drop(df_1_without_nan.query('UREA_MEDIAN.isnull()', engine='python').index)
+    # df_2_without_nan = df_1_without_nan.drop(df_1_without_nan.query('UREA_MEDIAN.isnull()', engine='python').index)
     
     # plot_features_with_same_value_for_all_observations(df_2_without_nan)
     
-    df_3_without_same_value_col = drop_features_with_same_value_for_all_observations(df_2_without_nan, False)
+    # df_3_without_same_value_col = drop_features_with_same_value_for_all_observations(df_2_without_nan, False)
     
     # plot_features_with_same_value_for_all_observations(df_3_without_same_value_col)
     
     # plot_duplicated_features(df_3_without_same_value_col)  
     
-    df_4_without_duplicated_features = drop_duplicated_features(df_3_without_same_value_col, False)
+    # df_4_without_duplicated_features = drop_duplicated_features(df_3_without_same_value_col, False)
     
     # plot_duplicated_features(df_4_without_duplicated_features)
     
-    df_5_renamed = rename_portion_of_columns(df_4_without_duplicated_features, 13, (13+36), '_MEDIAN', '')
+    # df_5_renamed = rename_portion_of_columns(df_4_without_duplicated_features, 13, (13+36), '_MEDIAN', '')
     
     # df_5_renamed.columns[13:13+36]
     
     # plot_patient_moved_to_icu_on_first_window(df_5_renamed)
     
-    df_6_icu_on_first_window = drop_patient_moved_to_icu_on_first_window(df_5_renamed)
+    # df_6_icu_on_first_window = drop_patient_moved_to_icu_on_first_window(df_5_renamed)
     
     # plot_patient_moved_to_icu_on_first_window(df_6_icu_on_first_window)
     
+    df_cleaned = clean(pd)
+    df_cleaned
     
