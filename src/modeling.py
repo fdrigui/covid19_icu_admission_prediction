@@ -14,6 +14,7 @@ from sklearn.model_selection import cross_validate
 from sklearn.ensemble._hist_gradient_boosting.gradient_boosting import HistGradientBoostingClassifier
 
 from sklearn.linear_model import LogisticRegression
+
     
 
 def run_model_cv(model, df, n_splits, n_repeats):
@@ -38,24 +39,32 @@ def run_model_cv(model, df, n_splits, n_repeats):
 
 if __name__ == '__main__':
     
-    import pandas as pd
-    import numpy as np
-    from sklearn.model_selection import train_test_split
-    from sklearn.model_selection import RepeatedStratifiedKFold
-    from sklearn.model_selection import cross_validate
-    
-    
-    
-    from sklearn.linear_model import LogisticRegression
-    from sklearn.ensemble import RandomForestClassifier
-    from xgboost import XGBClassifier
-    from sklearn.ensemble._hist_gradient_boosting.gradient_boosting import HistGradientBoostingClassifier
+   
+    from sklearn.feature_selection import VarianceThreshold
     
     df = pd.read_csv('../data/interim/df_featured.csv', index_col='PATIENT_VISIT_IDENTIFIER')
     
-    run_model_cv(LogisticRegression(max_iter=1000), df, 30, 15)
+    y = df["ICU"]
+    X = df.drop(["ICU"], axis=1)
     
-    run_model_cv(RandomForestClassifier( n_estimators=10), df, 30, 15)
+    vt = VarianceThreshold(0.05)
+    _ = vt.fit(X, y)
+
+    mask = vt.get_support()
+
+    X_1 = X.loc[:, mask]
     
-    run_model_cv(HistGradientBoostingClassifier(), df, 30, 15)
+    df_1 = pd.concat([X_1, y], axis=1)
+
+    
+
+    
+    
+    run_model_cv(LogisticRegression(max_iter=1000), df, 10, 50)
+    
+    run_model_cv(LogisticRegression(max_iter=1000), df_1, 10, 50)
+    
+    #run_model_cv(RandomForestClassifier( n_estimators=10), df, 30, 15)
+    
+    #run_model_cv(HistGradientBoostingClassifier(), df, 30, 15)
     
