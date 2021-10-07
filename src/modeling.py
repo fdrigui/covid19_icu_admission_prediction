@@ -34,7 +34,8 @@ def run_model_cv(model, df, n_splits, n_repeats):
     print(f'AUC Mean: {auc_mean.round(2)}\nAUC Std: {auc_std.round(3)}\nAUC CI: {(auc_mean - (2*auc_std)).round(2)} - {(auc_mean + (2*auc_std)).round(2)}')
     print('--------------------')
     
-    return result['test_score']
+
+
 
 
 if __name__ == '__main__':
@@ -60,9 +61,9 @@ if __name__ == '__main__':
 
     
     
-    run_model_cv(LogisticRegression(max_iter=1000), df, 10, 50)
+    #run_model_cv(LogisticRegression(max_iter=1000), df, 10, 50)
     
-    run_model_cv(LogisticRegression(max_iter=1000), df_1, 10, 50)
+     #run_model_cv(LogisticRegression(max_iter=1000), df_1, 10, 50)
     
     #run_model_cv(RandomForestClassifier( n_estimators=10), df, 30, 15)
     
