@@ -8,7 +8,7 @@ Created on Mon Oct  4 21:57:23 2021
 
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
+    from sklearn.model_selection import train_test_split
 from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn.model_selection import cross_validate
 from sklearn.ensemble._hist_gradient_boosting.gradient_boosting import HistGradientBoostingClassifier
@@ -33,7 +33,6 @@ def run_model_cv(model, df, n_splits, n_repeats):
     
     print(f'AUC Mean: {auc_mean.round(2)}\nAUC Std: {auc_std.round(3)}\nAUC CI: {(auc_mean - (2*auc_std)).round(2)} - {(auc_mean + (2*auc_std)).round(2)}')
     print('--------------------')
-    
 
 
 
@@ -57,15 +56,3 @@ if __name__ == '__main__':
     
     df_1 = pd.concat([X_1, y], axis=1)
 
-    
-
-    
-    
-    #run_model_cv(LogisticRegression(max_iter=1000), df, 10, 50)
-    
-     #run_model_cv(LogisticRegression(max_iter=1000), df_1, 10, 50)
-    
-    #run_model_cv(RandomForestClassifier( n_estimators=10), df, 30, 15)
-    
-    #run_model_cv(HistGradientBoostingClassifier(), df, 30, 15)
-    
