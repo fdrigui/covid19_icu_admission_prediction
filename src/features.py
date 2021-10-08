@@ -7,8 +7,10 @@ Created on Sat Oct  2 19:09:13 2021
 
 
 import pandas as pd
-# import numpy as np
+import numpy as np
 
+from matplotlib import pyplot as plt
+import seaborn as sns
 
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.model_selection import train_test_split
@@ -168,6 +170,43 @@ def plot_univariate_roc_auc(df: pd.DataFrame, low_cutband: float,
     return roc_auc
 
 
+def high_correlation_feature(df: pd.DataFrame, threshold: float = 0.95):
+    """
+    descr.
+
+    Returns
+    -------
+    None.
+
+    """
+    # Compute the correlation matrix
+    corr = df.iloc[:, 13: -2].corr().abs()
+    masked_corr = corr.copy()
+    masked_corr[corr < threshold] = 0
+    masked_corr[corr >= threshold] = 1
+
+    # Generate a mask for the upper triangle
+    mask = np.triu(np.ones_like(corr, dtype=bool))
+
+    # Set up the matplotlib figure
+    f, ax = plt.subplots(figsize=(10, 10))
+
+    # Generate a custom diverging colormap
+    cmap = sns.diverging_palette(220, 20, as_cmap=True)
+
+    # Draw the heatmap with the mask and correct aspect ratio
+    sns.heatmap(masked_corr, mask=mask, cmap=cmap, center=0,
+                square=True, vmin=0, vmax=1.0, cbar=False)
+
+    upper_tri = masked_corr.where(np.triu(np.ones(masked_corr.shape), k=1)\
+                                  .astype(bool))
+
+    for i in range(len(upper_tri)):
+        for j in range(len(upper_tri)):
+            if upper_tri.iloc[i, j] > threshold:
+                print(f'[{i}] {upper_tri.index[i]} x [{j}] {upper_tri.columns[j]}; corr: {corr.iloc[i, j].round(2)}')
+
+
 def drop_univariate_roc_auc(df: pd.DataFrame, low_cutband: float,
                             high_cutband: float, random_state: int = 0,
                             plot: bool = False) -> pd.DataFrame:
@@ -222,12 +261,14 @@ if __name__ == '__main__':
     #                        high_cutband=0.52, random_state=791723,
     #                        plot=True)
 
-    df_4_wo_low_roc_auc = drop_univariate_roc_auc(df_3_wo_low_var_feat,
-                                                  low_cutband=0.48,
-                                                  high_cutband=0.52,
-                                                  random_state=791723,
-                                                  plot=False)
+    # df_4_wo_low_roc_auc = drop_univariate_roc_auc(df_3_wo_low_var_feat,
+    #                                              low_cutband=0.48,
+    #                                              high_cutband=0.52,
+    #                                              random_state=791723,
+    #                                              plot=False)
 
     # plot_univariate_roc_auc(df_4_wo_low_roc_auc, low_cutband=0.48,
     #                         high_cutband=0.52, random_state=791723,
     #                         plot=True)
+    
+    high_correlation_feature(df_4_wo_low_roc_auc)
