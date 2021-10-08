@@ -124,7 +124,9 @@ def drop_low_variance_feature(df: pd.DataFrame, threshold: float = 0.01,
     return df_wo_low_var_feat_wt_y
 
 
-def plot_univariate_roc_auc(df: pd.DataFrame):
+def plot_univariate_roc_auc(df: pd.DataFrame, low_cutband: float,
+                            high_cutband: float, random_state: int = 0,
+                            plot: bool = True):
     """
     descr.
 
@@ -138,23 +140,65 @@ def plot_univariate_roc_auc(df: pd.DataFrame):
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y,
                                                         shuffle=True,
-                                                        test_size=0.20)
+                                                        test_size=0.20,
+                                                        random_state=random_state)
 
     roc_auc = []
     for feature in X_train.columns:
 
         # RandonForest_CLassiFier
-        rf_clf = RandomForestClassifier(n_estimators=100,
-                                        random_state=102930)
+        rf_clf = RandomForestClassifier(n_estimators=500,
+                                        random_state=random_state)
 
         rf_clf.fit(X_train[feature].to_frame(), y_train)
 
         y_pred = rf_clf.predict(X_test[feature].to_frame())
 
-        roc_auc.append(roc_auc_score(y_test, y_pred))
+        score = roc_auc_score(y_test, y_pred)
 
-        print('Feature:', feature, '; ROC:',
-              roc_auc_score(y_test, y_pred).round(3))
+        if (score >= low_cutband) & (score <= high_cutband):
+            roc_auc.append(feature)
+
+            if plot:
+                print('Feature:', feature, '; ROC:', score.round(3))
+
+    print('--------------------')
+    print(f'Foram encontradas {len(roc_auc)} features com ROC AOC entre {low_cutband} e {high_cutband}')
+
+    return roc_auc
+
+
+def drop_univariate_roc_auc(df: pd.DataFrame, low_cutband: float,
+                            high_cutband: float, random_state: int = 0,
+                            plot: bool = False) -> pd.DataFrame:
+    """
+    descr.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DESCRIPTION.
+    low_cutband : float
+        DESCRIPTION.
+    high_cutband : float
+        DESCRIPTION.
+    random_state : int, optional
+        DESCRIPTION. The default is 0.
+    plot : bool, optional
+        DESCRIPTION. The default is True.
+
+    Returns
+    -------
+    None.
+
+    """
+    roc_auc = plot_univariate_roc_auc(df=df, low_cutband=low_cutband,
+                                      high_cutband=high_cutband,
+                                      random_state=random_state, plot=plot)
+
+    df_wt_low_roc_auc = df.drop(roc_auc, axis=1)
+
+    return df_wt_low_roc_auc
 
 
 if __name__ == '__main__':
@@ -174,4 +218,16 @@ if __name__ == '__main__':
 
     # plot_low_variance_feature(df_3_wo_low_var_feat)
 
-    plot_univariate_roc_auc(df_3_wo_low_var_feat)
+    # plot_univariate_roc_auc(df_3_wo_low_var_feat, low_cutband=0.48,
+    #                        high_cutband=0.52, random_state=791723,
+    #                        plot=True)
+
+    df_4_wo_low_roc_auc = drop_univariate_roc_auc(df_3_wo_low_var_feat,
+                                                  low_cutband=0.48,
+                                                  high_cutband=0.52,
+                                                  random_state=791723,
+                                                  plot=False)
+
+    # plot_univariate_roc_auc(df_4_wo_low_roc_auc, low_cutband=0.48,
+    #                         high_cutband=0.52, random_state=791723,
+    #                         plot=True)
