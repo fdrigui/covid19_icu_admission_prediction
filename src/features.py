@@ -201,11 +201,22 @@ def high_correlation_feature(df: pd.DataFrame, threshold: float = 0.95):
     upper_tri = masked_corr.where(np.triu(np.ones(masked_corr.shape), k=1)\
                                   .astype(bool))
 
+    dunha = []
     for i in range(len(upper_tri)):
         for j in range(len(upper_tri)):
             if upper_tri.iloc[i, j] > threshold:
+                dunha.append([upper_tri.columns[i], upper_tri.columns[j]])
                 print(f'[{i}] {upper_tri.index[i]} x [{j}] {upper_tri.columns[j]}; corr: {corr.iloc[i, j].round(2)}')
 
+    k = 0
+    f, axes = plt.subplots((len(dunha)//3)+1, 3, figsize=(20, float(4*len(dunha)//3)+1))
+
+    f.suptitle('Scatterplot Variáveis para ser excluidas devido alta correlação')
+    for i, j in dunha:
+        sns.scatterplot(data=df, x=i, y=j, hue='ICU', ax=axes[k//3, k%3])
+        k+=1
+
+    plt.show()
 
 def drop_univariate_roc_auc(df: pd.DataFrame, low_cutband: float,
                             high_cutband: float, random_state: int = 0,
@@ -240,6 +251,22 @@ def drop_univariate_roc_auc(df: pd.DataFrame, low_cutband: float,
     return df_wt_low_roc_auc
 
 
+def feature(df: pd.DataFrame) -> pd.DataFrame:
+    
+    df_1_agescaled = scale_age_percentil(df)
+    df_2_wo_window = df_1_agescaled.drop('WINDOW', axis=1)
+    df_3_wo_low_var_feat = drop_low_variance_feature(df_2_wo_window)
+    df_4_wo_low_roc_auc = drop_univariate_roc_auc(df_3_wo_low_var_feat,
+                                                  low_cutband=0.48,
+                                                  high_cutband=0.52,
+                                                  random_state=791723,
+                                                  plot=False)
+    
+    df_5_wo_bloodpressure_special_cause = df_4_wo_low_roc_auc.drop(101)
+    
+    return df_5_wo_bloodpressure_special_cause
+
+
 if __name__ == '__main__':
 
     import pandas as pd
@@ -262,13 +289,15 @@ if __name__ == '__main__':
     #                        plot=True)
 
     # df_4_wo_low_roc_auc = drop_univariate_roc_auc(df_3_wo_low_var_feat,
-    #                                              low_cutband=0.48,
-    #                                              high_cutband=0.52,
-    #                                              random_state=791723,
-    #                                              plot=False)
+    #                                               low_cutband=0.48,
+    #                                               high_cutband=0.52,
+    #                                               random_state=791723,
+    #                                               plot=False)
 
     # plot_univariate_roc_auc(df_4_wo_low_roc_auc, low_cutband=0.48,
     #                         high_cutband=0.52, random_state=791723,
     #                         plot=True)
     
     high_correlation_feature(df_4_wo_low_roc_auc)
+    
+    df_5_wo_bloodpressure_special_cause = df_4_wo_low_roc_auc.drop(101)
