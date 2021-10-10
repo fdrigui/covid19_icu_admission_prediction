@@ -65,11 +65,8 @@ def run_model_cv(model_name, model, df, n_splits, n_repeats):
     auc_mean = np.mean(result['test_score'])
     auc_std = np.std(result['test_score'])
     
-    print(f'{model_name}: AUC Mean: {auc_mean.round(2)}, AUC Std: {auc_std.round(3)}, AUC CI: {(auc_mean - (2*auc_std)).round(2)} - {(auc_mean + (2*auc_std)).round(2)}')
-    # print({'Model':model,
-    #        'ROC_AUC_mean':auc_mean,
-    #        'ROC_AUC_std':auc_std,
-    #        'ROC_AUC_ci':(auc_mean - (2*auc_std))} - {(auc_mean + (2*auc_std))})
+    print(f'{model_name}: AUC Mean: {auc_mean}, AUC Std: {auc_std.round(3)}, AUC CI: {(auc_mean - (2*auc_std))} - {(auc_mean + (2*auc_std))}')
+
 
 
 def run__classifier_list(df: pd.DataFrame):
@@ -84,15 +81,15 @@ def run__classifier_list(df: pd.DataFrame):
     ('                            xgb', xgb)]
     
     for model_name, model in removed_classifiers:
-        run_model_cv(model_name, model, df, 10, 10)
+        run_model_cv(model_name, model, df, 5, 5)
 
 
 if __name__ == '__main__':
     
     df = pd.read_csv('../data/processed/df_featured.csv', index_col='Unnamed: 0')
     
-    # clf = xgb
-    # run_model_cv('xgb', clf, df, 10, 10)
+    clf = KNeighborsClassifier
+    run_model_cv('KNeighborsClassifier', clf, df, 10, 10)
     
-    run__classifier_list(df)
+    #run__classifier_list(df)
 

@@ -291,7 +291,13 @@ def feature(df: pd.DataFrame) -> pd.DataFrame:
     
     df_5_wo_bloodpressure_special_cause = df_4_wo_low_roc_auc.drop(101)
     
-    return df_5_wo_bloodpressure_special_cause
+    df_6_wt_bloodpressure_residual = residual_bloodpressure_sistolic_max_mean(df_5_wo_bloodpressure_special_cause)
+    
+    tobedropped = ['LEUKOCYTES','BLOODPRESSURE_DIASTOLIC_MIN','BLOODPRESSURE_DIASTOLIC_MEDIAN','RESPIRATORY_RATE_MEDIAN',
+               'RESPIRATORY_RATE_MAX','TEMPERATURE_MEDIAN','TEMPERATURE_MIN','TEMPERATURE_MAX','BLOODPRESSURE_SISTOLIC_MIN']
+    df_7_wt_high_corr_feat = df_6_wt_bloodpressure_residual.drop(tobedropped, axis=1)
+    
+    return df_7_wt_high_corr_feat
 
 
 if __name__ == '__main__':
@@ -328,3 +334,9 @@ if __name__ == '__main__':
     high_correlation_feature(df_4_wo_low_roc_auc)
     
     df_5_wo_bloodpressure_special_cause = df_4_wo_low_roc_auc.drop(101)
+    
+    df_6_wt_bloodpressure_residual = residual_bloodpressure_sistolic_max_mean(df_5_wo_bloodpressure_special_cause)
+    
+    tobedropped = ['LEUKOCYTES','BLOODPRESSURE_DIASTOLIC_MIN','BLOODPRESSURE_DIASTOLIC_MEDIAN','RESPIRATORY_RATE_MEDIAN',
+               'RESPIRATORY_RATE_MAX','TEMPERATURE_MEDIAN','TEMPERATURE_MIN','TEMPERATURE_MAX','BLOODPRESSURE_SISTOLIC_MIN']
+    df_7_wt_high_corr_feat = df_6_wt_bloodpressure_residual.drop(tobedropped, axis=1)
