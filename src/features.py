@@ -16,6 +16,7 @@ from sklearn.feature_selection import VarianceThreshold
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
+from sklearn.linear_model import LinearRegression
 
 
 def normalization_zero_to_one(serie: pd.Series) -> pd.Series:
@@ -250,9 +251,35 @@ def drop_univariate_roc_auc(df: pd.DataFrame, low_cutband: float,
 
     return df_wt_low_roc_auc
 
+def residual_bloodpressure_sistolic_max_mean(df: pd.DataFrame) -> pd.DataFrame:
+    x = df['BLOODPRESSURE_SISTOLIC_MEDIAN']
+    x = x.to_numpy().reshape(-1, 1)
+    y = df['BLOODPRESSURE_SISTOLIC_MAX']
+    reg = LinearRegression()
+    reg.fit(x,y)
+    prediction = reg.predict(x)
+    residual = (y - prediction)
+    df_6_wt_bloodpressure_residual = df.copy()
+    df_6_wt_bloodpressure_residual['BLOODPRESSURE_SISTOLIC_MAX'] = residual
+    df_6_wt_bloodpressure_residual = df_6_wt_bloodpressure_residual.rename(columns={'BLOODPRESSURE_SISTOLIC_MAX':'BLOODPRESSURE_MAX_MEDIAN_RESIDUAL'})
+    
+    return df_6_wt_bloodpressure_residual
 
 def feature(df: pd.DataFrame) -> pd.DataFrame:
+    '''
     
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DESCRIPTION.
+
+    Returns
+    -------
+    df_5_wo_bloodpressure_special_cause : TYPE
+        DESCRIPTION.
+
+    '''
     df_1_agescaled = scale_age_percentil(df)
     df_2_wo_window = df_1_agescaled.drop('WINDOW', axis=1)
     df_3_wo_low_var_feat = drop_low_variance_feature(df_2_wo_window)
