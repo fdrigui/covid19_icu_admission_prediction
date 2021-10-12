@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import RepeatedStratifiedKFold
+from sklearn.model_selection import LeaveOneOut
 from sklearn.model_selection import cross_validate
 import warnings
 
@@ -30,6 +31,8 @@ from sklearn.neighbors import RadiusNeighborsClassifier
 from sklearn.ensemble import VotingClassifier
 from sklearn.ensemble import RandomForestClassifier
 import xgboost as xgb
+from sklearn.dummy import DummyClassifier
+from sklearn.neighbors import NearestCentroid
 
 warnings.filterwarnings("ignore")
 pd.set_option("display.precision", 2)
@@ -48,30 +51,36 @@ def run_model_cv(model_name, model, df, n_splits, n_repeats):
 
     cv = RepeatedStratifiedKFold(n_splits = n_splits, n_repeats = n_repeats)
     
-    if model_name == '         RandomForestClassifier':
+    if model_name.lstrip(' ') == 'RandomForestClassifier':
 
         clf = model(max_depth=10, random_state=0)
         result = cross_validate(clf, X, y, cv=cv, scoring='roc_auc')
         
-    elif model_name == '                            xgb':
+    elif model_name.lstrip(' ') == 'xgb':
         
         clf = xgb.XGBRegressor(n_estimators =10, objective='binary:logistic',eval_metric='logloss')
+        result = cross_validate(clf, X, y, cv=cv, scoring='roc_auc')
+        
+    elif model_name.lstrip(' ') == 'DummyClassifier':
+        clf = DummyClassifier(strategy="prior")
         result = cross_validate(clf, X, y, cv=cv, scoring='roc_auc')
     
     else:      
         clf = model()
         result = cross_validate(clf, X, y, cv=cv, scoring='roc_auc')
 
-    auc_mean = np.mean(result['test_score'])
-    auc_std = np.std(result['test_score'])
+    auc_mean = np.mean(result['test_score']).round(2)
+    auc_std = np.std(result['test_score']).round(3)
     
-    print(f'{model_name}: AUC Mean: {auc_mean}, AUC Std: {auc_std.round(3)}, AUC CI: {(auc_mean - (2*auc_std))} - {(auc_mean + (2*auc_std))}')
+    print(f'{model_name}: AUC Mean: {auc_mean}, AUC Std: {auc_std.round(3)}, AUC CI: {(auc_mean - (2*auc_std)).round(2)} - {(auc_mean + (2*auc_std)).round(2)}')
 
 
 
 def run__classifier_list(df: pd.DataFrame):
     
     removed_classifiers = [
+    ('                DummyClassifier', DummyClassifier),
+    ('                NearestCentroid', NearestCentroid),
     ('         RandomForestClassifier', RandomForestClassifier),
     ('     GradientBoostingClassifier', GradientBoostingClassifier),
     ('      GaussianProcessClassifier', GaussianProcessClassifier),
@@ -81,15 +90,15 @@ def run__classifier_list(df: pd.DataFrame):
     ('                            xgb', xgb)]
     
     for model_name, model in removed_classifiers:
-        run_model_cv(model_name, model, df, 5, 5)
+        run_model_cv(model_name, model, df, 7, 10)
 
 
 if __name__ == '__main__':
     
     df = pd.read_csv('../data/processed/df_featured.csv', index_col='Unnamed: 0')
     
-    clf = KNeighborsClassifier
-    run_model_cv('KNeighborsClassifier', clf, df, 10, 10)
+    #clf = KNeighborsClassifier
+    #run_model_cv('KNeighborsClassifier', clf, df, 10, 10)
     
-    #run__classifier_list(df)
+    run__classifier_list(df)
 
