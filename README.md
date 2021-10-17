@@ -1,4 +1,4 @@
-Predição da necessidade de internação na UTI de paciêntes com COVID-19 usando Machine Learning
+Predição da necessidade de internação na UTI de pacientes com COVID-19 usando *Machine Learning*.
 ==============================
 
 ![Cover](https://raw.githubusercontent.com/fdrigui/covid19_icu_admission_prediction/main/img/cover_img_mini.png)
@@ -15,7 +15,7 @@ Predição da necessidade de internação na UTI de paciêntes com COVID-19 usan
    * [Conclusões](#concl)
    * [Agradecimentos](#agrad)
    * [Contato](#contato)
-   * [Project Organization](#porg)
+   * [Organização do projeto](#porg)
 <!--te-->
 
 <a name="apre"></a>
@@ -25,7 +25,7 @@ Espero que gostem...<br>
 
 <a name="res"></a>
 # Objetivo 📝
-Avaliar os dados disponibilizados pelo time de Data Intelligence do Hospital Sírio-Libanês, que contém informações de um conjunto de pacientes atendidos pelo hospital e que estavam acometidos pela COVID-19, para assim criar um modelo de predição que seja capaz de classificar esses pacientes entre aqueles cujo quadro clínico evoluiria a ponto de ser necessária a transferência para a unidade de tratamento intensivo (UTI) e os que ficarão estáveis enquanto internados. 
+Avaliar os dados disponibilizados pelo time de *Data Intelligence* do Hospital Sírio-Libanês, que contém informações de um conjunto de pacientes atendidos pelo hospital e que estavam acometidos pela COVID-19, para assim criar um modelo de predição que seja capaz de classificar esses pacientes entre aqueles cujo quadro clínico evoluiria a ponto de ser necessária a transferência para a unidade de tratamento intensivo (UTI) e os que ficarão estáveis enquanto internados. 
 
 <a name="sit"></a>
 # Situação 🌎
@@ -54,7 +54,7 @@ Avaliar os dados disponibilizados pelo time de Data Intelligence do Hospital Sí
 # Contato 🍕
 
 <a name="porg"></a>
-# Project Organization
+# Organização do projeto
 ------------
 
     ├── LICENSE
