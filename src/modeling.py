@@ -40,24 +40,8 @@ def run_model_cv(model_name, model, df, n_splits, n_repeats):
     X = df.drop(["ICU",], axis=1)
 
     cv = RepeatedStratifiedKFold(n_splits = n_splits, n_repeats = n_repeats)
-    
-    if model_name.lstrip(' ') == 'RandomForestClassifier':
 
-        clf = model(max_depth=10, random_state=0)
-        result = cross_validate(clf, X, y, cv=cv, scoring='roc_auc')
-        
-    elif model_name.lstrip(' ') == 'xgb':
-        
-        clf = xgb.XGBRegressor(n_estimators =10, objective='binary:logistic',eval_metric='logloss')
-        result = cross_validate(clf, X, y, cv=cv, scoring='roc_auc')
-        
-    elif model_name.lstrip(' ') == 'DummyClassifier':
-        clf = DummyClassifier(strategy="prior")
-        result = cross_validate(clf, X, y, cv=cv, scoring='roc_auc')
-    
-    else:      
-        clf = model()
-        result = cross_validate(clf, X, y, cv=cv, scoring='roc_auc')
+    result = cross_validate(model, X, y, cv=cv, scoring='roc_auc')
 
     auc_mean = np.mean(result['test_score']).round(2)
     auc_std = np.std(result['test_score']).round(3)
@@ -88,4 +72,4 @@ def many_Lazy_Classifiers(df: pd.DataFrame, n:int):
 if __name__ == '__main__':
     
     df = pd.read_csv('../data/processed/df_featured.csv', index_col='Unnamed: 0')
-    classifier_rank = many_Lazy_Classifiers(df, 30)
+    #classifier_rank = many_Lazy_Classifiers(df, 30)
