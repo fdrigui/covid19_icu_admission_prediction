@@ -19,7 +19,7 @@ from sklearn.base import ClassifierMixin
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, roc_auc_score, f1_score, r2_score, mean_squared_error
 import warnings
 import xgboost
-# import catboost
+import catboost
 import lightgbm
 
 
@@ -66,21 +66,21 @@ CLASSIFIERS = [est for est in all_estimators(
 REGRESSORS = [est for est in all_estimators(
 ) if issubclass(est[1], RegressorMixin)]
 
-removed_classifiers = [
-    ('ClassifierChain', ClassifierChain),
-    ('ComplementNB', ComplementNB),
-    ('GradientBoostingClassifier', GradientBoostingClassifier),
-    ('GaussianProcessClassifier', GaussianProcessClassifier),
-    ('HistGradientBoostingClassifier', HistGradientBoostingClassifier),
-    ('MLPClassifier', MLPClassifier),
-    ('LogisticRegressionCV', LogisticRegressionCV),
-    ('MultiOutputClassifier', MultiOutputClassifier),
-    ('MultinomialNB', MultinomialNB),
-    ('OneVsOneClassifier', OneVsOneClassifier),
-    ('OneVsRestClassifier', OneVsRestClassifier),
-    ('OutputCodeClassifier', OutputCodeClassifier),
-    ('RadiusNeighborsClassifier',RadiusNeighborsClassifier),
-    ('VotingClassifier', VotingClassifier)]
+#removed_classifiers = [
+#    ('ClassifierChain', ClassifierChain)]
+#    ('ComplementNB', ComplementNB),
+#    ('GradientBoostingClassifier', GradientBoostingClassifier),
+#    ('GaussianProcessClassifier', GaussianProcessClassifier),
+#    ('HistGradientBoostingClassifier', HistGradientBoostingClassifier),
+#    ('MLPClassifier', MLPClassifier),
+#   ('LogisticRegressionCV', LogisticRegressionCV),
+#    ('MultiOutputClassifier', MultiOutputClassifier),
+#    ('MultinomialNB', MultinomialNB),
+#    ('OneVsOneClassifier', OneVsOneClassifier),
+#    ('OneVsRestClassifier', OneVsRestClassifier),
+#    ('OutputCodeClassifier', OutputCodeClassifier),
+#    ('RadiusNeighborsClassifier',RadiusNeighborsClassifier),
+#    ('VotingClassifier', VotingClassifier)]
 
 removed_regressors = [
     ('TheilSenRegressor', TheilSenRegressor),
@@ -102,16 +102,16 @@ removed_regressors = [
 for i in removed_regressors:
     REGRESSORS.pop(REGRESSORS.index(i))
     
-for i in removed_classifiers:
-    CLASSIFIERS.pop(CLASSIFIERS.index(i))
+#for i in removed_classifiers:
+#    CLASSIFIERS.pop(CLASSIFIERS.index(i))
 
 REGRESSORS.append(('XGBRegressor', xgboost.XGBRegressor))
 REGRESSORS.append(('LGBMRegressor',lightgbm.LGBMRegressor))
-# REGRESSORS.append(('CatBoostRegressor',catboost.CatBoostRegressor))
+REGRESSORS.append(('CatBoostRegressor',catboost.CatBoostRegressor))
     
 CLASSIFIERS.append(('XGBClassifier',xgboost.XGBClassifier))
 CLASSIFIERS.append(('LGBMClassifier',lightgbm.LGBMClassifier))
-# CLASSIFIERS.append(('CatBoostClassifier',catboost.CatBoostClassifier))
+CLASSIFIERS.append(('CatBoostClassifier', catboost.CatBoostClassifier))
 
 numeric_transformer = Pipeline(steps=[
     ('imputer', SimpleImputer(strategy='mean')),
@@ -247,15 +247,29 @@ class LazyClassifier:
             start = time.time()
             try:
                 if 'random_state' in model().get_params().keys():
-                    pipe = Pipeline(steps=[
-                        ('preprocessor', preprocessor),
-                        ('classifier', model(random_state = self.random_state))
-                    ])
+                    if name == 'XGBClassifier':
+                        pipe = Pipeline(steps=[
+                            ('preprocessor', preprocessor),
+                            ('classifier', model(random_state = self.random_state,
+                                                 eval_metric='error'))
+                        ])
+                    else:
+                        pipe = Pipeline(steps=[
+                            ('preprocessor', preprocessor),
+                            ('classifier', model(random_state = self.random_state))
+                        ])
                 else:
-                    pipe = Pipeline(steps=[
-                        ('preprocessor', preprocessor),
-                        ('classifier', model())
-                    ])
+                    if name == 'CatBoostClassifier':
+                        pipe = Pipeline(steps=[
+                            ('preprocessor', preprocessor),
+                            ('classifier', model(random_state = self.random_state,
+                                                 logging_level='Silent'))
+                        ])
+                    else:
+                        pipe = Pipeline(steps=[
+                            ('preprocessor', preprocessor),
+                            ('classifier', model())
+                        ])
 
                 pipe.fit(X_train, y_train)
                 y_pred = pipe.predict(X_test)
