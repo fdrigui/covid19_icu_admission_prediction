@@ -122,4 +122,4 @@ if __name__ == '__main__':
              'max_depth': 30,
              'criterion': 'entropy',
              'bootstrap': False}
-    f = roc_auc_rank(df, param)
+    f = roc_auc_rank(df, param, random_state=1923814)
