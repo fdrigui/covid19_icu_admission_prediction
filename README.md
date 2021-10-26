@@ -13,7 +13,6 @@ Predição da necessidade de internação na UTI de pacientes com COVID-19 usand
    * [Execução](#exec)
    * [Resultados](#result)
    * [Conclusões](#concl)
-   * [Agradecimentos](#agrad)
    * [Contato](#contato)
    * [Organização do projeto](#porg)
 <!--te-->
@@ -25,7 +24,7 @@ Espero que gostem...<br>
 
 <a name="res"></a>
 # Objetivo 📝
-Avaliar os dados disponibilizados pelo time de *Data Intelligence* do Hospital Sírio-Libanês, que contém informações de um conjunto de pacientes atendidos pelo hospital e que estavam acometidos pela COVID-19, para assim criar um modelo de predição que seja capaz de classificar esses pacientes entre aqueles cujo quadro clínico evoluiria a ponto de ser necessária a transferência para a unidade de tratamento intensivo (UTI) e os que ficarão estáveis enquanto internados. 
+O objetivo é avaliar os dados disponibilizados pelo time de *Data Intelligence* do Hospital Sírio-Libanês, que contém informações de um conjunto de pacientes atendidos pelo hospital e que estavam acometidos pela COVID-19, para assim criar um modelo de predição que seja capaz de classificar esses pacientes entre aqueles cujo quadro clínico evoluiria a ponto de ser necessária a transferência para a unidade de tratamento intensivo (UTI) e os que permaneceriam em uma situação estável até a sua alta.<br>
 
 <a name="sit"></a>
 # Situação 🌎
@@ -67,23 +66,36 @@ A execulção do plano foi dividida em categorias, ficando assim mais fácil de 
 <a name="result"></a>
 # Resultados 🎯
 O Resultado final foi obtido usando o modelo **RandomForestClassifier** da biblioteca **scykit-learn**.<br>
-O **ROC_AUC** foi de **80%**, com um desvio padrão de **5.2%**
+O **ROC_AUC** médio foi de **80%**, com um desvio padrão de **5.2%**<br>
+![roc_auc_curve](./img/modeling/roc.png)
+*O valor do ROC_AUC do gráfico é de 0.85. Lembre-se que 0.8 é um valor médio, que varia dependendo da divisão dos dados de treino e teste, essa figura é ilustrativa e representa uma curva próxima da curva média*<br><br>
+Outra ferramenta boa para visualizar onde estão os erros e acertos do modelo é a **Matriz de Confusão**, como pode ser vista abaixo:
+![roc_auc_curve](./img/modeling/confusionmatrix.png)<br>
+Nesse caso, podemos ver que das 70 amostras utilizadas para testar o modelo:
+* 30 amostras deram verdadeiro negativo, indicando que o modelo estimou que os pacientes não iriam para a UTI e o modelo *acertou*
+* 28 amostras deram verdadeiro positivo, indicando que o modelo estimou que os pacientes precisariam ser encaminhados para a UTI no futuro, e o modelo *acertou*.
+* 8 amostras deram falso positivo, indicando que o modelo estimou que os pacientes iriam ser encaminhados para a UTI e o modelo *errou*.
+* 4 pacientes deram falso negativo, idnicando que o modelo estimou que os pacientes não evoluiriam para a UTI, e o modelo *errou*.<br>
+
+
+Vemos então que dos **70** pacientes avaliados pela amostra de testes, o modelo acertou **58** e errou **12**, o que representa **83%** de acerto.
 
 <a name="result"></a>
 # Conclusões 🚩
+O objetivo foi atingido, uma vez que temos um modelo de machine learnning consegue prever com razoavel qualidade os pacientes cujo quadro de saúde evoluiriam ou não para a UTI após a entrada no hospital.<br>
+O Modelo pode ser encontrado no caminho ```./models/RF_compressed.joblib```<br>
 
-<a name="agrad"></a>
-# Agradecimentos ♥️
 
 <a name="contato"></a>
 # Contato 🍕
+Caso queira me encontrar, me chame no [**linkedin**](https://www.linkedin.com/in/filipirigui/).
+Caso tenha alguma dúvida, sugestão de melhoria, ou simplesmente ampliar o seu network, será um prazer te-lo em meus contatos!
 
 <a name="porg"></a>
 # Organização do projeto
 ------------
 
     ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
     ├── README.md          <- The top-level README for developers using this project.
     ├── data
     │   ├── external       <- Data from third party sources.
