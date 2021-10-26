@@ -29,17 +29,23 @@ Avaliar os dados disponibilizados pelo time de *Data Intelligence* do Hospital S
 
 <a name="sit"></a>
 # Situação 🌎
+Devido a situação alarmante que todo o mundo vem passando nos ultimos anos, mu
 
 <a name="plan"></a>
 # Plano 🤓
 
-<!--ts-->
-   * [Ingestão dos dados](https://github.com/fdrigui/covid19_icu_admission_prediction/blob/main/notebooks/1.0_ingest_raw_data.ipynb)
 
-<!--te-->
 
 <a name="exec"></a>
 # Execução 👊
+
+<!--ts-->
+   * [Entendendo o dado](https://github.com/fdrigui/covid19_icu_admission_prediction/blob/main/notebooks/0.0_understanding_the_data.md)
+   * [Ingestão dos dados](https://github.com/fdrigui/covid19_icu_admission_prediction/blob/main/notebooks/1.0_ingest_raw_data.ipynb)
+   * [Limpeza dos dados](https://github.com/fdrigui/covid19_icu_admission_prediction/blob/main/notebooks/2.0_clean_data.ipynb)
+   * [Feature Engineering](https://github.com/fdrigui/covid19_icu_admission_prediction/blob/main/notebooks/3.0_feature_engineering.ipynb)
+   * [Modelo](https://github.com/fdrigui/covid19_icu_admission_prediction/blob/main/notebooks/4.0_Modeling.ipynb)
+<!--te-->
 
 <a name="result"></a>
 # Resultados 🎯

@@ -23,6 +23,7 @@ import xgboost as xgb
 from sklearn.dummy import DummyClassifier
 from sklearn.neighbors import NearestCentroid
 from supervised import LazyClassifier
+from sklearn.metrics import roc_auc_score
 
 warnings.filterwarnings("ignore")
 pd.set_option("display.precision", 2)
@@ -67,9 +68,58 @@ def many_Lazy_Classifiers(df: pd.DataFrame, n:int):
                          pd.DataFrame(model_list).std(axis=0)],
                         index=['mean','std']).T.sort_values(by='mean', ascending=False)
 
+def roc_auc_rank(df: pd.DataFrame, param:dict, random_state: int = 0):
+    """
+    descr.
+
+    Returns
+    -------
+    None.
+
+    """
+    y = df["ICU"]
+    X = df.drop(["ICU"], axis=1)
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y,
+                                                        shuffle=True,
+                                                        test_size=0.20,
+                                                        random_state=random_state)
+
+    roc_auc = []
+    for feature in X_train.columns:
+
+        # RandonForest_CLassiFier
+        rf_clf = RandomForestClassifier(oob_score=param['oob_score'],
+                                        n_estimators=param['n_estimators'],
+                                        min_samples_split=param['min_samples_split'],
+                                        min_samples_leaf=param['min_samples_leaf'],
+                                        max_features=param['max_features'],
+                                        max_depth=param['max_depth'],
+                                        criterion=param['criterion'],
+                                        bootstrap=param['bootstrap'])
+
+        rf_clf.fit(X_train[feature].to_frame(), y_train)
+
+        y_pred = rf_clf.predict(X_test[feature].to_frame())
+
+        score = roc_auc_score(y_test, y_pred)
+
+        roc_auc.append([feature, score])
+
+    return pd.DataFrame(roc_auc, columns=['feature', 'roc_auc']).sort_values(by='roc_auc', ascending=False)
+
 
 
 if __name__ == '__main__':
     
     df = pd.read_csv('../data/processed/df_featured.csv', index_col='Unnamed: 0')
-    #classifier_rank = many_Lazy_Classifiers(df, 30)
+    
+    param = {'oob_score': False,
+             'n_estimators': 2000,
+             'min_samples_split': 10,
+             'min_samples_leaf': 1,
+             'max_features': 'auto',
+             'max_depth': 30,
+             'criterion': 'entropy',
+             'bootstrap': False}
+    f = roc_auc_rank(df, param)
