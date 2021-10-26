@@ -29,16 +29,33 @@ Avaliar os dados disponibilizados pelo time de *Data Intelligence* do Hospital S
 
 <a name="sit"></a>
 # Situação 🌎
-Devido a situação alarmante que todo o mundo vem passando nos ultimos anos, mu
+O mundo se encontra em alerta com o aparecimento de um novo vírus e suas mutações.<br>
+O vírus **coronavírus SARS-CoV-2** causa uma infecção respiratória chamada de **Covid-19** que foi fatal para quase 5.000.000 de pessoas em todo o mundo.<br>
+Na tentativa de minimizar, ou até mesmo eliminar os problemas causados pelo vírus, a comunidade médica/científica vem trabalhando árduamente.<br>
+Uma maneira de minimizar as mortes pela infecção respiratória se dá pelo tratamento intensivo, nas UTIs dos hospitais, com o entubamento e medicamento apropriado. O problema é que muitas vezes, principalmente quando se tem um avanço no contagio, as UTIs ficam cheias, e ter um suporte no auxilio da tomada de decisão, indicando com antecedência os potenciais casos que se agravariam a ponto de precisar de um leito de UTI, poderia ajudar muito os médicos, na gestão dos leitos do hospital, e na negociação e transferencia dos pacientes quando se fizer necessário.
 
 <a name="plan"></a>
 # Plano 🤓
+## Workflow
+A estratégia tomada para chegar na definição do modelo passa por alguns passos, que são:
+1. Enrendendo o modelo
+2. Ingestão dos dados
+3. Limpeza dos dados
+4. Feature Engineering
+5. Modelo
+
+Esse workflow pode ser usado em casos reais, mais é necessário ter em mente que cada fase supra-citada não é rígida e única, e dependendo da situação, loops se fazem necessários voltando em etapas anteriores de maneira a considerar novas informações que uma etapa posterior levantou, então, por exemplo, na etapa de *feature engineering*, pode se ter uma idéia melhor sobre uma feature importante, e se faça necessário voltar um passo e refinar a *limpeza dos dados*, e assim por diante.
+
+## Métrica de avaliação
+A métrica de avaliação da performance do modelo se dará por meio do critério de **ROC_AUC**. Essa métrica foi explicada em maiores detalhes no Notebook [**Modelo**](https://github.com/fdrigui/covid19_icu_admission_prediction/blob/main/notebooks/4.0_Modeling.ipynb), no tópico *Métrica de avaliação*.<br>
+Basicamente a métrica **ROC_AUC** avalia o quão bem o modelo consegue dividir os dados entre as categorias de saída, ou seja, qão bem o modelo divide os pacientes que não foram para a UTI daqueles que acabaram precisando serem encaminhados para um leito de tratamento intesívo.
+
 
 
 
 <a name="exec"></a>
 # Execução 👊
-
+A execulção do plano foi dividida em categorias, ficando assim mais fácil de ser compreendida.
 <!--ts-->
    * [Entendendo o dado](https://github.com/fdrigui/covid19_icu_admission_prediction/blob/main/notebooks/0.0_understanding_the_data.md)
    * [Ingestão dos dados](https://github.com/fdrigui/covid19_icu_admission_prediction/blob/main/notebooks/1.0_ingest_raw_data.ipynb)
@@ -49,6 +66,8 @@ Devido a situação alarmante que todo o mundo vem passando nos ultimos anos, mu
 
 <a name="result"></a>
 # Resultados 🎯
+O Resultado final foi obtido usando o modelo **RandomForestClassifier** da biblioteca **scykit-learn**.<br>
+O **ROC_AUC** foi de **80%**, com um desvio padrão de **5.2%**
 
 <a name="result"></a>
 # Conclusões 🚩
