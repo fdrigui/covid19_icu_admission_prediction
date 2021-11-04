@@ -37,11 +37,11 @@ Uma maneira de minimizar as mortes pela infecção respiratória se dá pelo tra
 # Plano 🤓
 ## Workflow
 A estratégia tomada para chegar na definição do modelo passa por alguns passos, que são:
-1. Enrendendo o modelo
-2. Ingestão dos dados
-3. Limpeza dos dados
-4. Feature Engineering
-5. Modelo
+1. [**Enrendendo o modelo**](https://github.com/fdrigui/covid19_icu_admission_prediction/blob/main/notebooks/0.0_understanding_the_data.md)
+2. [**Ingestão dos dados**](https://github.com/fdrigui/covid19_icu_admission_prediction/blob/main/notebooks/1.0_ingest_raw_data.ipynb)
+3. [**Limpeza dos dados**](https://github.com/fdrigui/covid19_icu_admission_prediction/blob/main/notebooks/2.0_clean_data.ipynb)
+4. [**Feature Engineering**](https://github.com/fdrigui/covid19_icu_admission_prediction/blob/main/notebooks/3.0_feature_engineering.ipynb)
+5. [**Modelo**](https://github.com/fdrigui/covid19_icu_admission_prediction/blob/main/notebooks/4.0_Modeling.ipynb)
 
 Esse workflow pode ser usado em casos reais, mais é necessário ter em mente que cada fase supra-citada não é rígida e única, e dependendo da situação, loops se fazem necessários voltando em etapas anteriores de maneira a considerar novas informações que uma etapa posterior levantou, então, por exemplo, na etapa de *feature engineering*, pode se ter uma idéia melhor sobre uma feature importante, e se faça necessário voltar um passo e refinar a *limpeza dos dados*, e assim por diante.
 
